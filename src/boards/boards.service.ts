@@ -8,9 +8,7 @@ import { Board } from './board.entity';
 
 @Injectable()
 export class BoardsService {
-  constructor(
-    @InjectRepository(BoardRepository) private boardRepository: BoardRepository,
-  ) {}
+  constructor(private boardRepository: BoardRepository) {}
 
   async getBoardById(id: number): Promise<Board> {
     const found = await this.boardRepository.findOne({ where: { id } });
@@ -24,16 +22,8 @@ export class BoardsService {
   //   return this.boards;
   // }
 
-  async createBoard(createBoardDTO: CreateBoardDTO): Promise<Board> {
-    const { title, description } = createBoardDTO;
-    const board = this.boardRepository.create({
-      title,
-      description,
-      status: BoardStatus.PUBLIC,
-    });
-
-    await this.boardRepository.save(board);
-    return board;
+  createBoard(createBoardDto: CreateBoardDTO): Promise<Board> {
+    return this.boardRepository.createBoard(createBoardDto);
   }
   // getBoardById(id: string): Board {
   //   const found = this.boards.find((board) => board.id === id);
