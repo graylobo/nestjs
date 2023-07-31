@@ -32,13 +32,18 @@ export class BoardsService {
   //   }
   //   return found;
   // }
-  // deleteBoard(id: string): void {
-  //   const found = this.getBoardById(id);
-  //   this.boards.filter((board) => board.id !== found.id);
-  // }
-  // updateBoardStatus(id: string, status: BoardStatus) {
-  //   const board = this.getBoardById(id);
-  //   board.status = status;
-  //   return board;
-  // }
+  async deleteBoard(id: number): Promise<void> {
+    const result = await this.boardRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException('노아이디:' + id);
+    }
+  }
+  async updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
+    const board = await this.getBoardById(id);
+    board.status = status;
+    await this.boardRepository.save(board);
+    console.log('아디', id, '상태', status);
+    return board;
+  }
 }
