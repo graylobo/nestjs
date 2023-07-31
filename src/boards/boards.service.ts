@@ -18,20 +18,14 @@ export class BoardsService {
     }
     return found;
   }
-  // getAllBoards(): Board[] {
-  //   return this.boards;
-  // }
-
-  createBoard(createBoardDto: CreateBoardDTO): Promise<Board> {
-    return this.boardRepository.createBoard(createBoardDto);
+  async getAllBoards(): Promise<Board[]> {
+    return this.boardRepository.find();
   }
-  // getBoardById(id: string): Board {
-  //   const found = this.boards.find((board) => board.id === id);
-  //   if (!found) {
-  //     throw new NotFoundException('Not Found: ' + id);
-  //   }
-  //   return found;
-  // }
+
+  async createBoard(createBoardDto: CreateBoardDTO): Promise<Board> {
+    return await this.boardRepository.createBoard(createBoardDto);
+  }
+
   async deleteBoard(id: number): Promise<void> {
     const result = await this.boardRepository.delete(id);
 

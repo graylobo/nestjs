@@ -19,10 +19,10 @@ import { BoardStatus } from './boards-status.enum';
 @Controller('boards')
 export class BoardsController {
   constructor(private boardService: BoardsService) {}
-  // @Get()
-  // getAllBoard(): Board[] {
-  //   return this.boardService.getAllBoards();
-  // }
+  @Get()
+  getAllBoard(): Promise<Board[]> {
+    return this.boardService.getAllBoards();
+  }
 
   @Post()
   @UsePipes(ValidationPipe)
