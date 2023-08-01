@@ -1,12 +1,10 @@
-import { DataSource, Repository } from 'typeorm';
-import { User } from './user.entity';
+import { Repository } from 'typeorm';
 import { AuthCredentialsDto } from './dto/auth-credential.dto';
-import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './user.entity';
+import { CustomRepository } from 'src/database/typeorm-ex.decorator';
 
+@CustomRepository(User)
 export class UserRepository extends Repository<User> {
-  constructor(@InjectRepository(User) private dataSource: DataSource) {
-    super(User, dataSource.manager); // 변경
-  }
   async createUser(authCredentialDto: AuthCredentialsDto): Promise<void> {
     const { username, password } = authCredentialDto;
     const user = this.create({ username, password });
