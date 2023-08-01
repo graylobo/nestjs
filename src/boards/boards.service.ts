@@ -1,14 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BoardStatus } from './boards-status.enum';
-import { v1 as uuid } from 'uuid';
-import { CreateBoardDTO } from './dto/create-board.dto';
-import { BoardRepository } from './board.repository';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from './board.entity';
+import { BoardRepository } from './board.repository';
+import { BoardStatus } from './boards-status.enum';
+import { CreateBoardDTO } from './dto/create-board.dto';
 
 @Injectable()
 export class BoardsService {
   constructor(private boardRepository: BoardRepository) {}
+
+  async createBoard(createBoardDto: CreateBoardDTO): Promise<Board> {
+    return await this.boardRepository.createBoard(createBoardDto);
+  }
+  async getAllBoards(): Promise<Board[]> {
+    return this.boardRepository.find();
+  }
 
   async getBoardById(id: number): Promise<Board> {
     const found = await this.boardRepository.findOne({ where: { id } });
@@ -18,12 +23,12 @@ export class BoardsService {
     }
     return found;
   }
-  async getAllBoards(): Promise<Board[]> {
-    return this.boardRepository.find();
-  }
-
-  async createBoard(createBoardDto: CreateBoardDTO): Promise<Board> {
-    return await this.boardRepository.createBoard(createBoardDto);
+  async updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
+    const board = await this.getBoardById(id);
+    board.status = status;
+    await this.boardRepository.save(board);
+    console.log('아디', id, '상태', status);
+    return board;
   }
 
   async deleteBoard(id: number): Promise<void> {
@@ -32,12 +37,5 @@ export class BoardsService {
     if (result.affected === 0) {
       throw new NotFoundException('노아이디:' + id);
     }
-  }
-  async updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
-    const board = await this.getBoardById(id);
-    board.status = status;
-    await this.boardRepository.save(board);
-    console.log('아디', id, '상태', status);
-    return board;
   }
 }
