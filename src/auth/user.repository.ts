@@ -24,7 +24,7 @@ export class UserRepository extends Repository<User> {
         case '23505':
           throw new ConflictException('이미존재함');
         default:
-          throw new InternalServerErrorException('뷁');
+          throw new InternalServerErrorException('뷁' + error);
       }
     }
   }

@@ -25,8 +25,8 @@ import { User } from 'src/auth/user.entity';
 export class BoardsController {
   constructor(private boardService: BoardsService) {}
   @Get()
-  getAllBoard(): Promise<Board[]> {
-    return this.boardService.getAllBoards();
+  getAllBoard(@GetUser() user: User): Promise<Board[]> {
+    return this.boardService.getAllBoards(user);
   }
 
   @Post()
