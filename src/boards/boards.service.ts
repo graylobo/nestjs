@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Board } from './board.entity';
 import { BoardRepository } from './board.repository';
 import { BoardStatus } from './boards-status.enum';
@@ -38,11 +42,27 @@ export class BoardsService {
     return board;
   }
 
-  async deleteBoard(id: number): Promise<void> {
+  async deleteBoard(id: number, user: User): Promise<void> {
+    const board = await this.boardRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!board) {
+      throw new NotFoundException(`Board with ID "${id}" not found`);
+    }
+
+    if (Number(board.userId) !== user.id) {
+      throw new UnauthorizedException(
+        'You are not authorized to delete this board',
+      );
+    }
+
     const result = await this.boardRepository.delete(id);
 
     if (result.affected === 0) {
-      throw new NotFoundException('노아이디:' + id);
+      throw new NotFoundException('Board not found');
     }
   }
 }

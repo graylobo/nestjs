@@ -21,6 +21,8 @@ export class Board extends BaseEntity {
 
   @Column()
   status: BoardStatus;
+  @Column()
+  userId: string;
 
   @ManyToOne((type) => User, (user) => user.boards, { eager: false })
   user: User;
