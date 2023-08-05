@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Patch,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { Board } from './board.entity';
 import { BoardsService } from './boards.service';
@@ -23,9 +24,11 @@ import { User } from 'src/auth/user.entity';
 @Controller('boards')
 @UseGuards(AuthGuard())
 export class BoardsController {
+  private logger = new Logger('보드로거');
   constructor(private boardService: BoardsService) {}
   @Get()
   getAllBoard(@GetUser() user: User): Promise<Board[]> {
+    this.logger.log(`유저 ${JSON.stringify(user)}`);
     return this.boardService.getAllBoards(user);
   }
 
